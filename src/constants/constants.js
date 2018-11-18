@@ -1,0 +1,11 @@
+const ADD_ITEM = 'ADD_ITEM'
+const REMOVE_ITEM = 'REMOVE_ITEM'
+const UNDO_ITEM = 'UNDO_ITEM'
+const REDO_ITEM = 'REDO_ITEM'
+
+module.exports = {
+  ADD_ITEM,
+  REMOVE_ITEM,
+  UNDO_ITEM,
+  REDO_ITEM,
+}
