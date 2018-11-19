@@ -1,4 +1,4 @@
-import { ADD_ITEM, REMOVE_ITEM, UNDO_ITEM, REDO_ITEM, SET_FILTER } from '../constants/constants'
+import { ADD_ITEM, REMOVE_ITEM, UNDO_ITEM, REDO_ITEM } from '../constants/constants'
 
 export const AddItemAction = name => ({
     type: ADD_ITEM,
@@ -16,9 +16,4 @@ export const RedoItemAction = key => ({
 
 export const UndoItemAction = key => ({
     type: UNDO_ITEM,
-})
-
-export const SetFilterAction = filter => ({
-  type: SET_FILTER,
-  filter: filter
 })

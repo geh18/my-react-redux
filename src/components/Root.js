@@ -8,7 +8,7 @@ import App from './App';
 const Root = ({ store }) => (
   <Provider store={store}>
     <Switch>
-        <Route exact path='/' component={App} />
+        <Route path='/:filter?' component={App} />
     </Switch>
   </Provider>
 )

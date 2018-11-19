@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from "react-redux";
+import { connect } from "react-redux"
+import { Link, withRouter } from 'react-router-dom'
 
 import {
-  RemoveItemAction, UndoItemAction, RedoItemAction, SetFilterAction
+  RemoveItemAction, UndoItemAction, RedoItemAction
 } from '../actions/itemListActions'
 
 
@@ -49,14 +50,10 @@ class ListItems extends Component {
     </ul>
   )
 
-  filterListHandler = key => e => {
-    this.props.setFilterAction(key)
-  }
-
   filterButton = () => {
     const domData = {
       elements: [
-        {key: 'show_all', text: 'All'},
+        {key: 'all', text: 'All'},
         {key: 'odd', text: 'Odd numbers'},
         {key: 'even', text: 'Whole numbers'}
       ]
@@ -66,7 +63,7 @@ class ListItems extends Component {
       <div className='filter-items'>
         {
           domData.elements.map(el => (
-            <button key={el.key} onClick={this.filterListHandler(el.key)}>{el.text}</button>
+            <Link to={`/${el.key}`} key={el.key}>{el.text}</Link>
           ))
         }
       </div>
@@ -86,7 +83,7 @@ class ListItems extends Component {
 
 const filterListHandler = (list, filter) => {
   switch (filter) {
-    case 'show_all':
+    case 'all':
       return list
     case 'odd':
       return list.filter(it => { return (it % 2) !== 0 })
@@ -98,15 +95,24 @@ const filterListHandler = (list, filter) => {
 }
 
 
-const mapStateToProps = state => ({
-  items: filterListHandler(state.listData.items, state.listData.filter)
+const mapStateToProps = (state, { match: { params: { filter } } }) => ({
+  items: filterListHandler(
+    state.listData,
+    filter || 'all'
+  ),
 })
 
-const mapDispatchToProps = dispatch => ({
-    removeItem: key => dispatch(RemoveItemAction(key)),
-    undoLastAction: () => dispatch(UndoItemAction()),
-    redoLastAction: () => dispatch(RedoItemAction()),
-    setFilterAction: filter => dispatch(SetFilterAction(filter))
-})
+// const mapDispatchToProps = dispatch => ({
+//     removeItem: key => dispatch(RemoveItemAction(key)),
+//     undoLastAction: () => dispatch(UndoItemAction()),
+//     redoLastAction: () => dispatch(RedoItemAction()),
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListItems)
+export default withRouter(connect(
+  mapStateToProps,
+  {
+    removeItem: RemoveItemAction,
+    undoLastAction: UndoItemAction,
+    redoLastAction: RedoItemAction
+  }
+)(ListItems))
