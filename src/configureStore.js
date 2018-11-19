@@ -6,7 +6,11 @@ import reducers from './reducers/reducers'
 
 const configureStore = () => {
   const initialState = loadState()
-  const store = createStore(reducers, undefined)
+  const store = createStore(
+    reducers,
+    undefined,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
   store.subscribe(throttle(() => {
       saveState(store.getState())

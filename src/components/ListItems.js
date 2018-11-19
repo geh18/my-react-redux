@@ -1,26 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
 
-import { RemoveItemAction, UndoItemAction, RedoItemAction } from '../actions/itemListActions'
+import {
+  RemoveItemAction, UndoItemAction, RedoItemAction, SetFilterAction
+} from '../actions/itemListActions'
 
-
-const FilterButtons = ({ clickHandler }) => {
-
-
-}
 
 class ListItems extends Component {
 
   constructor(props) {
     super(props)
 
-    this.state = {
-      filterKey: 'all',
-      listItems: this.props.items
-    }
-
     this.removeItem = this.removeItem.bind(this)
-    this.filterListHandler = this.filterListHandler.bind(this)
     this.undoHandler = this.undoHandler.bind(this)
     this.redoHandler = this.redoHandler.bind(this)
   }
@@ -37,25 +28,6 @@ class ListItems extends Component {
     this.props.redoLastAction()
   }
 
-  filterListHandler = query => e => {
-    switch (query) {
-      case 'all':
-        this.setState({
-          listItems: this.props.items
-        })
-        break;
-      case 'odd':
-        this.setState({
-          listItems: this.props.items.filter(it => { return (it % 2) !== 0 })
-        })
-        break;
-      case 'even':
-        this.setState({
-          listItems: this.props.items.filter(it => { return (it % 2) === 0 })
-        })
-        break;
-    }
-  }
 
   undoRedoItems = () => (
     <div>
@@ -67,7 +39,7 @@ class ListItems extends Component {
   listItems = () => (
     <ul>
     {
-      this.state.listItems.map( (it, i) => (
+      this.props.items.map( (it, i) => (
         <li key={i}>
         {it}
         <button onClick={this.removeItem.bind(this, i)}>X</button>
@@ -77,10 +49,14 @@ class ListItems extends Component {
     </ul>
   )
 
+  filterListHandler = key => e => {
+    this.props.setFilterAction(key)
+  }
+
   filterButton = () => {
     const domData = {
       elements: [
-        {key: 'all', text: 'All'},
+        {key: 'show_all', text: 'All'},
         {key: 'odd', text: 'Odd numbers'},
         {key: 'even', text: 'Whole numbers'}
       ]
@@ -108,14 +84,29 @@ class ListItems extends Component {
   }
 }
 
+const filterListHandler = (list, filter) => {
+  switch (filter) {
+    case 'show_all':
+      return list
+    case 'odd':
+      return list.filter(it => { return (it % 2) !== 0 })
+    case 'even':
+      return list.filter(it => { return (it % 2) === 0 })
+    default:
+      return list
+  }
+}
+
+
 const mapStateToProps = state => ({
-    items: state.listData
+  items: filterListHandler(state.listData.items, state.listData.filter)
 })
 
 const mapDispatchToProps = dispatch => ({
     removeItem: key => dispatch(RemoveItemAction(key)),
     undoLastAction: () => dispatch(UndoItemAction()),
     redoLastAction: () => dispatch(RedoItemAction()),
+    setFilterAction: filter => dispatch(SetFilterAction(filter))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListItems)
