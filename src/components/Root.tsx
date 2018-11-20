@@ -2,7 +2,7 @@ import React from 'react'
 import { Provider } from "react-redux";
 import { Switch, Route } from 'react-router-dom'
 
-import App from './App';
+import App from './App.tsx';
 
 
 const Root = ({ store }) => (
